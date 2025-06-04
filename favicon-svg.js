@@ -5,7 +5,7 @@ import { mkdir, readdir, copyFile } from "fs/promises";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const srcDir = resolve(__dirname, "src");
 const distDir = resolve(__dirname, "dist");
-const outputPath = resolve(distDir, "icon.svg");
+const outputPath = resolve(distDir, "favicon.svg");
 
 async function findFirstSvgFile(dirPath) {
   const files = await readdir(dirPath);
@@ -13,7 +13,7 @@ async function findFirstSvgFile(dirPath) {
   return svgFile ? resolve(dirPath, svgFile) : null;
 }
 
-async function copySvg() {
+async function createFaviconSvg() {
   await mkdir(distDir, { recursive: true });
 
   const inputPath = await findFirstSvgFile(srcDir);
@@ -23,7 +23,7 @@ async function copySvg() {
   }
 
   await copyFile(inputPath, outputPath);
-  console.log("icon.svg を出力しました");
+  console.log("favicon.svg を出力しました");
 }
 
-copySvg();
+createFaviconSvg();
