@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "create": "node favicon-ico.js && node apple-touch-icon.js"
+    "create": "node copy-svg.js && node favicon-ico.js && node apple-touch-icon.js"
   },
   "devDependencies": {
     "png-to-ico": "^2.1.8",
