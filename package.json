@@ -4,9 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "create": "node apple-touch-icon.js"
+    "create": "node favicon.js && node apple-touch-icon.js"
   },
   "devDependencies": {
+    "png-to-ico": "^2.1.8",
     "sharp": "^0.34.2"
   }
 }
