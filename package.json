@@ -1,0 +1,12 @@
+{
+  "name": "favicon-touchicon-generator",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "create": "node apple-touch-icon.js"
+  },
+  "devDependencies": {
+    "sharp": "^0.34.2"
+  }
+}
