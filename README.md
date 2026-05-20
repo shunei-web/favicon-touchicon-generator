@@ -2,66 +2,111 @@
 
 ## 概要
 
-favicon-touchicon-generator は、Web サイトに必要なファビコン（favicon）と Apple Touch Icon（apple-touch-icon）を、1 枚の SVG 画像から自動生成するツールです。
+1 枚の SVG ファイルから、2026 年版 Coliss 推奨仕様に準拠した **7 種類のアイコン + Web App Manifest** を一括生成するツールです。
 
-「src」フォルダに SVG ファイルを 1 つ置くだけで、コマンド一つで以下の 3 種類のアイコン画像を「dist」フォルダにまとめて出力できます。
+- ブラウザタブ向けの favicon（ICO / SVG）
+- iOS ホーム画面向けの Apple Touch Icon
+- Android PWA 向けの any・maskable アイコン（Adaptive Icon 対応）
+- Web App Manifest（`manifest.webmanifest`）
 
-- favicon.ico（32×32px ICO ファイル：PC ブラウザやブックマーク用）
-- favicon.svg（SVG ファビコン：モダンブラウザ向け）
-- apple-touch-icon.png（180×180px PNG：iOS デバイスのホーム画面用）
+参考: [2026 年版 favicon の設定方法 | Coliss](https://coliss.com/articles/build-websites/operation/work/how-to-favicon.html)
 
-これらのアイコンは、Web サイトのタブやブックマーク、iPhone/iPad のホーム画面ショートカットなど、各種端末・ブラウザで最適に表示されます。
+## 出力ファイル一覧
 
-HTML の head タグに必要な記述例もあわせて提供しており、面倒な手作業を省き、誰でも簡単に最新のファビコン環境を整えることができます。
-
-## 特徴
-
-- SVG ファイル 1 枚から主要なファビコン画像を一括生成
-- 画像サイズや形式の変換は自動で最適化
-- 生成されたファイルをそのままサイトのルートに配置して利用可能
-- HTML への記述例も明記、実装ミスを防止
-
-このツールを使えば、Web サイトの見た目やブランド力を高めるファビコン・アイコンの導入が、誰でも簡単・確実に実現できます。
+| ファイル | サイズ | 用途 | 対象 | purpose |
+|---|---|---|---|---|
+| `favicon.ico` | 32×32 | ブラウザタブ（レガシー） | デスクトップ | - |
+| `favicon.svg` | - | モダンブラウザ（ダーク対応） | デスクトップ / モバイル | - |
+| `apple-touch-icon.png` | 180×180 | ホーム画面に追加 | iPhone / iPad | - |
+| `icon-192.png` | 192×192 | PWA インストールアイコン | Android | `any` |
+| `icon-512.png` | 512×512 | PWA スプラッシュ / 拡大表示 | Android | `any` |
+| `icon-mask-512.png` | 512×512 | Adaptive Icon（マスク対応） | Android | `maskable` |
+| `manifest.webmanifest` | - | Web App Manifest | Android（主）/ iOS（一部） | - |
 
 ## 使い方
 
-1. npm のインストール
+### 1. インストール
 
 ```
 npm install
 ```
 
-2. SVG ファイルを src フォルダに置く
+### 2. config.json を作成
 
-   ※1 つ以上の SVG ファイルを置いてください。最初に見つかったファイルが使われます。
+`config.example.json` をコピーして `config.json` を作成し、サイト情報を編集してください。
 
-3. 実行
+```
+cp config.example.json config.json
+```
+
+**config.json の設定項目**
+
+| キー | 説明 |
+|---|---|
+| `name` | サイト名（PWA インストール時に表示） |
+| `short_name` | 短縮名（ホーム画面アイコンラベル） |
+| `description` | サイトの説明文 |
+| `start_url` | PWA 起動時の URL（通常 `"/"` ） |
+| `display` | 表示モード（`"standalone"` 推奨） |
+| `orientation` | 画面向き（`"portrait"` / `"landscape"` / `"any"`） |
+| `background_color` | 背景色（PWA スプラッシュ + maskable アイコン背景に使用） |
+| `theme_color` | ブラウザ UI の着色（アドレスバー等） |
+| `lang` | 言語コード（`"ja"` / `"en"` 等） |
+| `scope` | PWA のスコープ（通常 `"/"` ） |
+| `icon_base_path` | manifest 内アイコン src のプレフィックス（通常 `"/"` ） |
+
+> **注意**: `config.json` はプロジェクト固有の設定ファイルです。`.gitignore` に追加済みのため、Git にはコミットされません。
+
+### 3. SVG ファイルを src フォルダに置く
+
+`src/` フォルダに SVG ファイルを 1 つ配置してください。複数ある場合は最初に見つかったファイルが使用されます。
+
+### 4. 実行
 
 ```
 npm run create
 ```
 
-4. 3 つのファビコン関連画像ファイルが dist フォルダに出力されます
+以下の 7 ファイルが `dist/` フォルダに出力されます。
 
 ```
 favicon.ico（32px）を出力しました
 favicon.svg を出力しました
 apple-touch-icon.png を出力しました
+icon-192.png を出力しました
+icon-512.png を出力しました
+icon-mask-512.png を出力しました
+manifest.webmanifest を出力しました
 ```
 
-5. 出力された 3 つのファイルをサイトのルートフォルダ（例：public やドキュメントルート）に配置してください
+### 5. dist/ のファイルをデプロイ
 
-   ※必ずしもルート直下でなくても動作しますが、一般的にはルート直下が推奨です。
+`dist/` 内の 7 ファイルをサイトのルートに配置します（`/favicon.ico` でアクセスできる場所）。
 
-6. HTML の head タグに次のコードを追加します
+### 6. HTML の `<head>` に記述を追加
 
+```html
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#000000">
 ```
-<!-- favicon（ブラウザタブやブックマーク用、主にWindows/多くのブラウザで利用） -->
-<link rel="icon" href="/favicon.ico" sizes="32x32" />
 
-<!-- SVGファビコン（最新ブラウザでサポート、拡大縮小や高解像度に強い） -->
-<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+> `theme-color` の値は `config.json` の `theme_color` と合わせてください。
 
-<!-- apple-touch-icon（iOSデバイスのホーム画面に追加した時のアイコン） -->
-<link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
-```
+## maskable アイコンについて
+
+`icon-mask-512.png` は W3C の [Web App Manifest 仕様](https://www.w3.org/TR/appmanifest/#purpose-member)で定義された **maskable** アイコンです。
+
+Android の Adaptive Icon 機能により、端末メーカーや OS 設定に応じてアイコンが円・角丸・しずく型などにマスクされます。このとき、アイコンの端ギリギリまで描画されていると重要な絵柄が切り取られてしまいます。
+
+maskable アイコンでは **中央 80%（Safe Zone）** にロゴを配置し、外側 20% を背景色のみにすることで、どの形状のマスクでも絵柄が欠けない設計になっています。
+
+本ツールでは `background_color`（config.json）をアイコン背景色として使用します。[Maskable.app](https://maskable.app/) でプレビューして確認することをおすすめします。
+
+## 参考リンク
+
+- [2026 年版 favicon の設定方法 | Coliss](https://coliss.com/articles/build-websites/operation/work/how-to-favicon.html)
+- [Web App Manifest | W3C](https://www.w3.org/TR/appmanifest/)
+- [Maskable.app — maskable アイコンのプレビューツール](https://maskable.app/)

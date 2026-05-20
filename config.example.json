@@ -1,0 +1,13 @@
+{
+  "name": "Your Site Name",
+  "short_name": "YourSite",
+  "description": "Your site description (used in PWA install prompt)",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "lang": "ja",
+  "scope": "/",
+  "icon_base_path": "/"
+}
