@@ -91,17 +91,12 @@ manifest.webmanifest を出力しました
 
 `dist/` 内の 7 ファイルをサイトのルートに配置します（`/favicon.ico` でアクセスできる場所）。
 
-### 6. HTML の `<head>` に記述を追加
+### 6. HTML の `<head>` に貼り付け
 
-```html
-<link rel="icon" href="/favicon.ico" sizes="32x32">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="manifest" href="/manifest.webmanifest">
-<meta name="theme-color" content="#000000">
-```
+`dist/head-tags.html` の内容をそのまま `<head>` 内にコピーしてください。
+favicon / apple-touch-icon / manifest / theme-color に加えて、**iOS PWA splash screen** 8 サイズ分の `<link>` も含まれます。
 
-> `theme-color` の値は `config.json` の `theme_color` と合わせてください。
+> `head-tags.html` は `config.json` の `theme_color` と `icon_base_path` を自動展開します。
 
 ## maskable アイコンについて
 
