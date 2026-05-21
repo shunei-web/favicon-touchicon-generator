@@ -17,7 +17,7 @@
 |---|---|---|---|---|
 | `favicon.ico` | 32×32 | ブラウザタブ（レガシー） | デスクトップ | - |
 | `favicon.svg` | - | モダンブラウザ（ダーク対応） | デスクトップ / モバイル | - |
-| `apple-touch-icon.png` | 180×180 | ホーム画面に追加 | iPhone / iPad | - |
+| `apple-touch-icon.png` | 180×180 | ホーム画面に追加（`background_color` 塗りつぶし + 140px ロゴ中央配置） | iPhone / iPad | - |
 | `icon-192.png` | 192×192 | PWA インストールアイコン | Android | `any` |
 | `icon-512.png` | 512×512 | PWA スプラッシュ / 拡大表示 | Android | `any` |
 | `icon-mask-512.png` | 512×512 | Adaptive Icon（マスク対応） | Android | `maskable` |
@@ -106,6 +106,10 @@ Android の Adaptive Icon 機能により、端末メーカーや OS 設定に�
 maskable アイコンでは **中央 80%（Safe Zone）** にロゴを配置し、外側 20% を背景色のみにすることで、どの形状のマスクでも絵柄が欠けない設計になっています。
 
 本ツールでは `background_color`（config.json）をアイコン背景色として使用します。[Maskable.app](https://maskable.app/) でプレビューして確認することをおすすめします。
+
+## アーキテクチャ
+
+`helpers.js` が共通ユーティリティ（`findFirstSvgFile` / `ensureDistDir` / `srcDir` / `distDir` / `hexToRgb`）を提供し、`config.js` が `loadConfig`（config.json 読み込み）を担当します。各生成スクリプト（`favicon-ico.js` / `favicon-svg.js` / `apple-touch-icon.js` / `icon-any.js` / `icon-maskable.js` / `manifest.js`）はこれらを import して使用するため、共通処理が一箇所に集約されています。
 
 ## 参考リンク
 

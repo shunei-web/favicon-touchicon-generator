@@ -1,24 +1,15 @@
-import { dirname, resolve, extname } from "path";
-import { fileURLToPath } from "url";
-import { mkdir, readdir, copyFile } from "fs/promises";
+import { resolve } from "path";
+import { copyFile } from "fs/promises";
+import { distDir, findFirstSvgFile, ensureDistDir } from "./helpers.js";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const srcDir = resolve(__dirname, "src");
-const distDir = resolve(__dirname, "dist");
 const outputPath = resolve(distDir, "favicon.svg");
 
-async function findFirstSvgFile(dirPath) {
-  const files = await readdir(dirPath);
-  const svgFile = files.find((file) => extname(file).toLowerCase() === ".svg");
-  return svgFile ? resolve(dirPath, svgFile) : null;
-}
-
 async function createFaviconSvg() {
-  await mkdir(distDir, { recursive: true });
+  await ensureDistDir();
 
-  const inputPath = await findFirstSvgFile(srcDir);
+  const inputPath = await findFirstSvgFile();
   if (!inputPath) {
-    console.error("srcフォルダ内にSVGファイルが見つかりませんでした");
+    console.error("src フォルダ内に SVG ファイルが見つかりませんでした");
     return;
   }
 

@@ -1,14 +1,11 @@
-import { dirname, resolve } from "path";
-import { fileURLToPath } from "url";
-import { mkdir, writeFile } from "fs/promises";
+import { resolve } from "path";
+import { writeFile } from "fs/promises";
+import { distDir, ensureDistDir } from "./helpers.js";
 import { loadConfig } from "./config.js";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const distDir = resolve(__dirname, "dist");
 
 async function createManifest() {
   try {
-    await mkdir(distDir, { recursive: true });
+    await ensureDistDir();
 
     const config = await loadConfig();
 

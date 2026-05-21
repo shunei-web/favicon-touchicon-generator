@@ -1,25 +1,14 @@
 import sharp from "sharp";
-import { dirname, resolve, extname } from "path";
-import { fileURLToPath } from "url";
-import { mkdir, readdir } from "fs/promises";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const srcDir = resolve(__dirname, "src");
-const distDir = resolve(__dirname, "dist");
-
-async function findFirstSvgFile(dirPath) {
-  const files = await readdir(dirPath);
-  const svgFile = files.find((file) => extname(file).toLowerCase() === ".svg");
-  return svgFile ? resolve(dirPath, svgFile) : null;
-}
+import { resolve } from "path";
+import { distDir, findFirstSvgFile, ensureDistDir } from "./helpers.js";
 
 async function createIconAny() {
   try {
-    await mkdir(distDir, { recursive: true });
+    await ensureDistDir();
 
-    const inputPath = await findFirstSvgFile(srcDir);
+    const inputPath = await findFirstSvgFile();
     if (!inputPath) {
-      console.error("srcフォルダ内にSVGファイルが見つかりませんでした");
+      console.error("src フォルダ内に SVG ファイルが見つかりませんでした");
       return;
     }
 
