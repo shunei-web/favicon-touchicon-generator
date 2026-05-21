@@ -49,12 +49,12 @@ async function createIconMaskable() {
       return;
     }
 
-    // W3C maskable icon 仕様: safe zone は中央 80%（= 410×410）
+    // Coliss 2026 仕様 + W3C maskable icon: safe zone は 409×409 (中央 80%)
     // Android adaptive icon がマスク（円・角丸・しずく等）で切り抜いても
     // 重要な絵柄が欠けないよう 51px の余白を四辺に確保する
     const CANVAS = 512;
-    const SAFE_ZONE = Math.round(CANVAS * 0.8); // 410
-    const OFFSET = Math.floor((CANVAS - SAFE_ZONE) / 2); // 51
+    const SAFE_ZONE = 409; // Coliss 仕様（512×0.8 = 409.6 を floor、安全領域は 409×409 の正方形）
+    const OFFSET = Math.floor((CANVAS - SAFE_ZONE) / 2); // (512-409)/2 = 51
 
     // ロゴを safe zone サイズにリサイズ（透過保持）
     const logoBuffer = await sharp(inputPath)
