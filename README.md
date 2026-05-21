@@ -1,4 +1,4 @@
-# favicon-touchicon-generator
+# favicon-pwa-generator
 
 ## 概要
 
