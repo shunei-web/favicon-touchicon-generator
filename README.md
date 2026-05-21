@@ -76,6 +76,29 @@ cp config.example.json config.json
 
 `src/` フォルダに SVG ファイルを 1 つ配置してください。複数ある場合は最初に見つかったファイルが使用されます。
 
+### ダークモード対応 (favicon.svg のみ、任意)
+
+`favicon.svg` はモダンブラウザでダークモード切替が可能です (PNG 出力 = ICO / apple-touch / icon-any / maskable / ios-splash は静的 raster のためダークモード非対応)。
+
+ダークモード対応にするには src SVG 内に `<style>` で `@media (prefers-color-scheme: dark)` を埋め込みます:
+
+```xml
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .bg { fill: #FCC800; }
+    .logo { fill: #0F0F0F; }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #1a1a1a; }
+      .logo { fill: #FCC800; }
+    }
+  </style>
+  <rect class="bg" width="512" height="512" rx="32"/>
+  <path class="logo" d="..."/>
+</svg>
+```
+
+`favicon-svg.js` は SVG を `copyFile` で `dist/favicon.svg` に複製するため、`<style>` 内の media query がブラウザでそのまま動作します。
+
 ### 4. 実行
 
 ```
