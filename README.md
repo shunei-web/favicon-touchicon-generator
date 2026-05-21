@@ -2,12 +2,14 @@
 
 ## 概要
 
-1 枚の SVG ファイルから、2026 年版 Coliss 推奨仕様に準拠した **7 種類のアイコン + Web App Manifest** を一括生成するツールです。
+1 枚の SVG ファイルから、2026 年版 Coliss 推奨仕様に準拠した **7 種類のアイコン + iOS splash screen 8 種 + Web App Manifest + HTML スニペット** を一括生成するツールです。
 
 - ブラウザタブ向けの favicon（ICO / SVG）
 - iOS ホーム画面向けの Apple Touch Icon
 - Android PWA 向けの any・maskable アイコン（Adaptive Icon 対応）
+- iOS PWA 起動時の splash screen（iPhone 5 サイズ + iPad 3 サイズ、計 8 ファイル）
 - Web App Manifest（`manifest.webmanifest`）
+- `<head>` に貼り付けるだけの HTML スニペット（`head-tags.html`）
 
 参考: [2026 年版 favicon の設定方法 | Coliss](https://coliss.com/articles/build-websites/operation/work/how-to-favicon.html)
 
@@ -22,11 +24,15 @@
 | `icon-512.png` | 512×512 | PWA スプラッシュ / 拡大表示 | Android | `any` |
 | `icon-mask-512.png` | 512×512 | Adaptive Icon（マスク対応）/ WordPress site_icon source ※2 ※3 | Android / 全般 | `maskable` |
 | `manifest.webmanifest` | - | Web App Manifest | Android（主）/ iOS（一部） | - |
+| `ios-splash-*.png`（8 種） | 各機種解像度 | PWA 起動 splash screen ※4 | iPhone / iPad | - |
+| `head-tags.html` | - | `<head>` 貼り付け用 HTML スニペット | 全ブラウザ | - |
 
 > ※1 `config.background_color` で 180×180 を塗りつぶし + 140×140 ロゴ中央配置（20px padding）。透明 padding を残すと iOS「ホーム画面に追加」でホーム画面 wallpaper が透けて見える問題を回避するため。
 >
 > ※2 `config.background_color` で 512×512 を塗りつぶし + 409×409 safe zone 中央配置（51-52px padding）。Android adaptive icon マスク（円 / 角丸 / しずく等）で重要絵柄が欠けないよう、W3C maskable spec の safe zone 80% を確保。
 >
+> ※4 `background_color` で全面塗りつぶし + canvas 短辺の 30% サイズのロゴを中央配置（portrait のみ）。`head-tags.html` に含まれる `apple-touch-startup-image` link 群を `<head>` に貼ることで iOS が media query で適切なサイズを自動選択する。
+
 > ※3 `icon-mask-512.png` は WordPress テーマの `site_icon`（管理画面 → 外観 → カスタマイズ → サイトアイコン）の **source PNG としても流用可能**。WP コアは site_icon から 32 / 180 / 192 / 270 を自動派生するため、`bg 塗りつぶし` + `safe zone 80%` の 1 枚で「WP 派生 4 サイズ + manifest maskable」の計 5 サイズをカバーできる（safe zone 80% は Apple HIG inner box ~80% / Android adaptive ~80% と一致、ブラウザタブ favicon 32×32 派生でも視覚的に自然な余白）。
 
 ## 使い方
@@ -75,16 +81,25 @@ cp config.example.json config.json
 npm run create
 ```
 
-以下の 7 ファイルが `dist/` フォルダに出力されます。
+以下の 16 ファイルが `dist/` フォルダに出力されます。
 
 ```
 favicon.ico（32px）を出力しました
 favicon.svg を出力しました
-apple-touch-icon.png を出力しました
+apple-touch-icon.png（180×180、background_color 塗りつぶし）を出力しました
 icon-192.png を出力しました
 icon-512.png を出力しました
 icon-mask-512.png を出力しました
 manifest.webmanifest を出力しました
+ios-splash-1290x2796.png を出力しました
+ios-splash-1284x2778.png を出力しました
+ios-splash-1170x2532.png を出力しました
+ios-splash-1125x2436.png を出力しました
+ios-splash-750x1334.png を出力しました
+ios-splash-2048x2732.png を出力しました
+ios-splash-1668x2388.png を出力しました
+ios-splash-1536x2048.png を出力しました
+head-tags.html を出力しました
 ```
 
 ### 5. dist/ のファイルをデプロイ
@@ -108,9 +123,15 @@ maskable アイコンでは **中央 80%（Safe Zone）** にロゴを配置し�
 
 本ツールでは `background_color`（config.json）をアイコン背景色として使用します。[Maskable.app](https://maskable.app/) でプレビューして確認することをおすすめします。
 
+## iOS PWA splash screen について
+
+iPhone / iPad で「ホーム画面に追加」した PWA を起動した際、アプリ起動中に表示される全画面 splash 画像です。本ツールは iPhone 5 サイズ + iPad 3 サイズの計 8 ファイルを portrait のみで生成します（landscape 非対応）。
+
+ロゴは canvas 短辺の 30% サイズで中央配置、残りは `background_color` で塗りつぶされます。`dist/head-tags.html` の `apple-touch-startup-image` link 群を `<head>` に貼ることで、iOS が media query で適切な splash 画像を自動選択します。
+
 ## アーキテクチャ
 
-`helpers.js` が共通ユーティリティ（`findFirstSvgFile` / `ensureDistDir` / `srcDir` / `distDir` / `hexToRgb`）を提供し、`config.js` が `loadConfig`（config.json 読み込み）を担当します。各生成スクリプト（`favicon-ico.js` / `favicon-svg.js` / `apple-touch-icon.js` / `icon-any.js` / `icon-maskable.js` / `manifest.js`）はこれらを import して使用するため、共通処理が一箇所に集約されています。
+`helpers.js` が共通ユーティリティ（`findFirstSvgFile` / `ensureDistDir` / `srcDir` / `distDir` / `hexToRgb`）を提供し、`config.js` が `loadConfig`（config.json 読み込み）を担当します。各生成スクリプト（`favicon-ico.js` / `favicon-svg.js` / `apple-touch-icon.js` / `icon-any.js` / `icon-maskable.js` / `manifest.js` / `ios-splash.js` / `head-tags.js`）はこれらを import して使用するため、共通処理が一箇所に集約されています。
 
 ## 参考リンク
 

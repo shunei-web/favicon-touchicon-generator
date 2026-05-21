@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "create": "node favicon-ico.js && node favicon-svg.js && node apple-touch-icon.js && node icon-any.js && node icon-maskable.js && node manifest.js && node head-tags.js"
+    "create": "node favicon-ico.js && node favicon-svg.js && node apple-touch-icon.js && node icon-any.js && node icon-maskable.js && node manifest.js && node ios-splash.js && node head-tags.js"
   },
   "volta": {
     "node": "22.16.0",
