@@ -28,7 +28,7 @@
 ### 1. インストール
 
 ```
-pnpm install
+npm install
 ```
 
 ### 2. config.json を作成
@@ -64,7 +64,7 @@ cp config.example.json config.json
 ### 4. 実行
 
 ```
-pnpm run create
+npm run create
 ```
 
 以下の 7 ファイルが `dist/` フォルダに出力されます。
