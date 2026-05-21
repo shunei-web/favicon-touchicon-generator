@@ -31,9 +31,9 @@
 >
 > ※2 `config.background_color` で 512×512 を塗りつぶし + 409×409 safe zone 中央配置（51-52px padding）。Android adaptive icon マスク（円 / 角丸 / しずく等）で重要絵柄が欠けないよう、W3C maskable spec の safe zone 80% を確保。
 >
-> ※4 `background_color` で全面塗りつぶし + canvas 短辺の `splash_logo_ratio`（デフォルト 30%）サイズのロゴを中央配置（portrait のみ）。`head-tags.html` に含まれる `apple-touch-startup-image` link 群を `<head>` に貼ることで iOS が media query で適切なサイズを自動選択する。
-
 > ※3 `icon-mask-512.png` は WordPress テーマの `site_icon`（管理画面 → 外観 → カスタマイズ → サイトアイコン）の **source PNG としても流用可能**。WP コアは site_icon から 32 / 180 / 192 / 270 を自動派生するため、`bg 塗りつぶし` + `safe zone 80%` の 1 枚で「WP 派生 4 サイズ + manifest maskable」の計 5 サイズをカバーできる（safe zone 80% は Apple HIG inner box ~80% / Android adaptive ~80% と一致、ブラウザタブ favicon 32×32 派生でも視覚的に自然な余白）。
+
+> ※4 `background_color` で全面塗りつぶし + canvas 短辺の `splash_logo_ratio`（デフォルト 30%）サイズのロゴを中央配置（portrait のみ）。`head-tags.html` に含まれる `apple-touch-startup-image` link 群を `<head>` に貼ることで iOS が media query で適切なサイズを自動選択する。
 
 ## 使い方
 
