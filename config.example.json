@@ -9,5 +9,6 @@
   "theme_color": "#000000",
   "lang": "ja",
   "scope": "/",
-  "icon_base_path": "/"
+  "icon_base_path": "/",
+  "splash_logo_ratio": 0.3
 }

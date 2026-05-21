@@ -28,9 +28,17 @@ async function createIosSplash() {
     const config = await loadConfig();
     const { r, g, b } = hexToRgb(config.background_color);
 
+    // ロゴサイズ比率 = splash_logo_ratio (デフォルト 0.3 = canvas 短辺の 30%)
+    // Apple HIG 控えめ splash 慣行 (20-30%) と pwa-asset-generator default (80%) の選択肢を許容
+    const rawRatio = config.splash_logo_ratio;
+    const validRatio = typeof rawRatio === "number" && rawRatio > 0 && rawRatio <= 1;
+    if (rawRatio !== undefined && !validRatio) {
+      console.warn(`splash_logo_ratio は 0 < x <= 1 の数値で指定してください (現在: ${rawRatio}、デフォルト 0.3 を使用)`);
+    }
+    const logoRatio = validRatio ? rawRatio : 0.3;
+
     for (const { width, height } of splashSizes) {
-      // ロゴサイズ = canvas 短辺の 30%（Coliss 2026 仕様準拠の保守的設計）
-      const logoSize = Math.floor(Math.min(width, height) * 0.3);
+      const logoSize = Math.floor(Math.min(width, height) * logoRatio);
 
       // ロゴを logoSize × logoSize にリサイズ（fit: contain で SVG アスペクト比保持）
       const logoBuffer = await sharp(inputPath)

@@ -31,7 +31,7 @@
 >
 > ※2 `config.background_color` で 512×512 を塗りつぶし + 409×409 safe zone 中央配置（51-52px padding）。Android adaptive icon マスク（円 / 角丸 / しずく等）で重要絵柄が欠けないよう、W3C maskable spec の safe zone 80% を確保。
 >
-> ※4 `background_color` で全面塗りつぶし + canvas 短辺の 30% サイズのロゴを中央配置（portrait のみ）。`head-tags.html` に含まれる `apple-touch-startup-image` link 群を `<head>` に貼ることで iOS が media query で適切なサイズを自動選択する。
+> ※4 `background_color` で全面塗りつぶし + canvas 短辺の `splash_logo_ratio`（デフォルト 30%）サイズのロゴを中央配置（portrait のみ）。`head-tags.html` に含まれる `apple-touch-startup-image` link 群を `<head>` に貼ることで iOS が media query で適切なサイズを自動選択する。
 
 > ※3 `icon-mask-512.png` は WordPress テーマの `site_icon`（管理画面 → 外観 → カスタマイズ → サイトアイコン）の **source PNG としても流用可能**。WP コアは site_icon から 32 / 180 / 192 / 270 を自動派生するため、`bg 塗りつぶし` + `safe zone 80%` の 1 枚で「WP 派生 4 サイズ + manifest maskable」の計 5 サイズをカバーできる（safe zone 80% は Apple HIG inner box ~80% / Android adaptive ~80% と一致、ブラウザタブ favicon 32×32 派生でも視覚的に自然な余白）。
 
@@ -66,6 +66,7 @@ cp config.example.json config.json
 | `orientation` | 任意 | 画面向き固定（`"portrait"` / `"landscape"` / `"any"`、不要なら省略可） |
 | `lang` | 任意 | コンテンツ言語（`"ja"` / `"en"` 等、SEO / a11y 補助） |
 | `scope` | 任意 | PWA のスコープ制限（通常 `"/"` でサイト全体、サブパス制限時に指定） |
+| `splash_logo_ratio` | 任意 | iOS splash のロゴサイズ比率（`0 < x <= 1`、デフォルト `0.3`）。詳細は「iOS PWA splash screen について」を参照 |
 
 > **Coliss 記事と本ツールの差分について**: Coliss 記事の `manifest.webmanifest` 例は最小構成（`name` + `icons` のみ）ですが、本ツールは W3C Web App Manifest 仕様の標準フィールドを 11 件出力します。PWA アプリ風起動 / splash 画面 / ブラウザ UI 着色を実用するには「強推奨」までの 7 フィールドの設定が事実上必要なため、`config.example.json` で全件をテンプレ提供しています。「任意」のフィールドが不要な場合は `config.json` 内で空文字 (`""`) にしても manifest.webmanifest 出力には影響しません（manifest 内に空フィールドとして残ります。完全に省きたい場合は `manifest.js` の icons 配列構築を参考に各フィールドを optional 出力に拡張してください）。
 
@@ -127,7 +128,20 @@ maskable アイコンでは **中央 80%（Safe Zone）** にロゴを配置し�
 
 iPhone / iPad で「ホーム画面に追加」した PWA を起動した際、アプリ起動中に表示される全画面 splash 画像です。本ツールは iPhone 5 サイズ + iPad 3 サイズの計 8 ファイルを portrait のみで生成します（landscape 非対応）。
 
-ロゴは canvas 短辺の 30% サイズで中央配置、残りは `background_color` で塗りつぶされます。`dist/head-tags.html` の `apple-touch-startup-image` link 群を `<head>` に貼ることで、iOS が media query で適切な splash 画像を自動選択します。
+ロゴは canvas 短辺の `splash_logo_ratio`（デフォルト 30%）サイズで中央配置、残りは `background_color` で塗りつぶされます。`dist/head-tags.html` の `apple-touch-startup-image` link 群を `<head>` に貼ることで、iOS が media query で適切な splash 画像を自動選択します。
+
+### splash ロゴサイズの調整
+
+`config.json` の `splash_logo_ratio` フィールドで canvas 短辺に対するロゴサイズ比率を調整できます (デフォルト `0.3` = 30%)。
+
+| 値 | 効果 | 推奨用途 |
+|---|---|---|
+| `0.2` | 控えめ (20%) | Apple HIG 純正アプリ寄り、企業サイト |
+| `0.3` (default) | 控えめ寄りバランス | 一般 Web 制作 / Coliss 2026 推奨範囲 |
+| `0.5` | 中央目立つ (50%) | ブランド志向のサイト |
+| `0.8` | 大型 (80%) | pwa-asset-generator default 相当、ロゴ全面押し出し |
+
+0 < x ≤ 1 の範囲外の値はデフォルト 0.3 にフォールバックします。
 
 ## アーキテクチャ
 
