@@ -1,55 +1,20 @@
 import sharp from "sharp";
-import { dirname, resolve, extname } from "path";
-import { fileURLToPath } from "url";
-import { mkdir, readdir } from "fs/promises";
+import { resolve } from "path";
+import { distDir, findFirstSvgFile, ensureDistDir, hexToRgb } from "./helpers.js";
 import { loadConfig } from "./config.js";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const srcDir = resolve(__dirname, "src");
-const distDir = resolve(__dirname, "dist");
-
-/**
- * "#RRGGBB" または "#RGB" 形式の 16 進数カラーコードを { r, g, b } に変換する
- * @param {string} hex
- * @returns {{ r: number, g: number, b: number }}
- */
-function hexToRgb(hex) {
-  // # を除去
-  const cleaned = hex.replace(/^#/, "");
-
-  // #RGB → #RRGGBB に拡張
-  const full =
-    cleaned.length === 3
-      ? cleaned
-          .split("")
-          .map((c) => c + c)
-          .join("")
-      : cleaned;
-
-  const r = parseInt(full.slice(0, 2), 16);
-  const g = parseInt(full.slice(2, 4), 16);
-  const b = parseInt(full.slice(4, 6), 16);
-  return { r, g, b };
-}
-
-async function findFirstSvgFile(dirPath) {
-  const files = await readdir(dirPath);
-  const svgFile = files.find((file) => extname(file).toLowerCase() === ".svg");
-  return svgFile ? resolve(dirPath, svgFile) : null;
-}
 
 async function createIconMaskable() {
   try {
-    await mkdir(distDir, { recursive: true });
+    await ensureDistDir();
 
     const config = await loadConfig();
-    const inputPath = await findFirstSvgFile(srcDir);
+    const inputPath = await findFirstSvgFile();
     if (!inputPath) {
-      console.error("srcフォルダ内にSVGファイルが見つかりませんでした");
+      console.error("src フォルダ内に SVG ファイルが見つかりませんでした");
       return;
     }
 
-    // Coliss 2026 仕様 + W3C maskable icon: safe zone は 409×409 (中央 80%)
+    // Coliss 2026 仕様 + W3C maskable icon: safe zone は 409×409（中央 80%）
     // Android adaptive icon がマスク（円・角丸・しずく等）で切り抜いても
     // 重要な絵柄が欠けないよう 51px の余白を四辺に確保する
     const CANVAS = 512;

@@ -17,11 +17,17 @@
 |---|---|---|---|---|
 | `favicon.ico` | 32×32 | ブラウザタブ（レガシー） | デスクトップ | - |
 | `favicon.svg` | - | モダンブラウザ（ダーク対応） | デスクトップ / モバイル | - |
-| `apple-touch-icon.png` | 180×180 | ホーム画面に追加 | iPhone / iPad | - |
+| `apple-touch-icon.png` | 180×180 | ホーム画面に追加 ※1 | iPhone / iPad | - |
 | `icon-192.png` | 192×192 | PWA インストールアイコン | Android | `any` |
 | `icon-512.png` | 512×512 | PWA スプラッシュ / 拡大表示 | Android | `any` |
-| `icon-mask-512.png` | 512×512 | Adaptive Icon（マスク対応） | Android | `maskable` |
+| `icon-mask-512.png` | 512×512 | Adaptive Icon（マスク対応）/ WordPress site_icon source ※2 ※3 | Android / 全般 | `maskable` |
 | `manifest.webmanifest` | - | Web App Manifest | Android（主）/ iOS（一部） | - |
+
+> ※1 `config.background_color` で 180×180 を塗りつぶし + 140×140 ロゴ中央配置（20px padding）。透明 padding を残すと iOS「ホーム画面に追加」でホーム画面 wallpaper が透けて見える問題を回避するため。
+>
+> ※2 `config.background_color` で 512×512 を塗りつぶし + 409×409 safe zone 中央配置（51-52px padding）。Android adaptive icon マスク（円 / 角丸 / しずく等）で重要絵柄が欠けないよう、W3C maskable spec の safe zone 80% を確保。
+>
+> ※3 `icon-mask-512.png` は WordPress テーマの `site_icon`（管理画面 → 外観 → カスタマイズ → サイトアイコン）の **source PNG としても流用可能**。WP コアは site_icon から 32 / 180 / 192 / 270 を自動派生するため、`bg 塗りつぶし` + `safe zone 80%` の 1 枚で「WP 派生 4 サイズ + manifest maskable」の計 5 サイズをカバーできる（safe zone 80% は Apple HIG inner box ~80% / Android adaptive ~80% と一致、ブラウザタブ favicon 32×32 派生でも視覚的に自然な余白）。
 
 ## 使い方
 
@@ -106,6 +112,10 @@ Android の Adaptive Icon 機能により、端末メーカーや OS 設定に�
 maskable アイコンでは **中央 80%（Safe Zone）** にロゴを配置し、外側 20% を背景色のみにすることで、どの形状のマスクでも絵柄が欠けない設計になっています。
 
 本ツールでは `background_color`（config.json）をアイコン背景色として使用します。[Maskable.app](https://maskable.app/) でプレビューして確認することをおすすめします。
+
+## アーキテクチャ
+
+`helpers.js` が共通ユーティリティ（`findFirstSvgFile` / `ensureDistDir` / `srcDir` / `distDir` / `hexToRgb`）を提供し、`config.js` が `loadConfig`（config.json 読み込み）を担当します。各生成スクリプト（`favicon-ico.js` / `favicon-svg.js` / `apple-touch-icon.js` / `icon-any.js` / `icon-maskable.js` / `manifest.js`）はこれらを import して使用するため、共通処理が一箇所に集約されています。
 
 ## 参考リンク
 
