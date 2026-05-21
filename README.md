@@ -2,7 +2,7 @@
 
 ## 概要
 
-1 枚の SVG ファイルから、2026 年版 Coliss 推奨仕様に準拠した **7 種類のアイコン + iOS splash screen 8 種 + Web App Manifest + HTML スニペット** を一括生成するツールです。
+1 枚の SVG ファイルから、2026 年版 Coliss 推奨仕様準拠の **favicon (ICO / SVG) + Apple Touch Icon + PWA アイコン (any / maskable) + Web App Manifest** に加え、**iOS PWA splash screen 8 種 + HTML スニペット**（独自拡張）を一括生成するツールです。
 
 - ブラウザタブ向けの favicon（ICO / SVG）
 - iOS ホーム画面向けの Apple Touch Icon
@@ -160,7 +160,7 @@ iPhone / iPad で「ホーム画面に追加」した PWA を起動した際、�
 | 値 | 効果 | 推奨用途 |
 |---|---|---|
 | `0.2` | 控えめ (20%) | Apple HIG 純正アプリ寄り、企業サイト |
-| `0.3` (default) | 控えめ寄りバランス | 一般 Web 制作 / Coliss 2026 推奨範囲 |
+| `0.3` (default) | 控えめ寄りバランス | 一般 Web 制作 / Apple HIG 控えめ慣行寄り |
 | `0.5` | 中央目立つ (50%) | ブランド志向のサイト |
 | `0.8` | 大型 (80%) | pwa-asset-generator default 相当、ロゴ全面押し出し |
 
