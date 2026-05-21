@@ -41,19 +41,21 @@ cp config.example.json config.json
 
 **config.json の設定項目**
 
-| キー | 説明 |
-|---|---|
-| `name` | サイト名（PWA インストール時に表示） |
-| `short_name` | 短縮名（ホーム画面アイコンラベル） |
-| `description` | サイトの説明文 |
-| `start_url` | PWA 起動時の URL（通常 `"/"` ） |
-| `display` | 表示モード（`"standalone"` 推奨） |
-| `orientation` | 画面向き（`"portrait"` / `"landscape"` / `"any"`） |
-| `background_color` | 背景色（PWA スプラッシュ + maskable アイコン背景に使用） |
-| `theme_color` | ブラウザ UI の着色（アドレスバー等） |
-| `lang` | 言語コード（`"ja"` / `"en"` 等） |
-| `scope` | PWA のスコープ（通常 `"/"` ） |
-| `icon_base_path` | manifest 内アイコン src のプレフィックス（通常 `"/"` ） |
+| キー | 必要度 | 説明 |
+|---|---|---|
+| `name` | **必須** | サイト名（PWA インストール時に表示） |
+| `icon_base_path` | **必須** | manifest 内アイコン src のプレフィックス（通常 `"/"`、サブパス配信時は `"/sub/"` 等） |
+| `short_name` | 強推奨 | 短縮名（12 文字以内、ホーム画面アイコンラベル） |
+| `start_url` | 強推奨 | PWA 起動時の URL（通常 `"/"`、未指定だと現在 URL が使われる） |
+| `display` | 強推奨 | 表示モード（`"standalone"` で PWA アプリ風起動、他に `"fullscreen"` / `"minimal-ui"` / `"browser"`） |
+| `background_color` | 強推奨 | PWA スプラッシュ画面 + **maskable アイコンの塗りつぶし色**に共用 |
+| `theme_color` | 強推奨 | ブラウザ UI の着色（アドレスバー / status bar） |
+| `description` | 推奨 | PWA インストール prompt に表示される説明文 |
+| `orientation` | 任意 | 画面向き固定（`"portrait"` / `"landscape"` / `"any"`、不要なら省略可） |
+| `lang` | 任意 | コンテンツ言語（`"ja"` / `"en"` 等、SEO / a11y 補助） |
+| `scope` | 任意 | PWA のスコープ制限（通常 `"/"` でサイト全体、サブパス制限時に指定） |
+
+> **Coliss 記事と本ツールの差分について**: Coliss 記事の `manifest.webmanifest` 例は最小構成（`name` + `icons` のみ）ですが、本ツールは W3C Web App Manifest 仕様の標準フィールドを 11 件出力します。PWA アプリ風起動 / splash 画面 / ブラウザ UI 着色を実用するには「強推奨」までの 7 フィールドの設定が事実上必要なため、`config.example.json` で全件をテンプレ提供しています。「任意」のフィールドが不要な場合は `config.json` 内で空文字 (`""`) にしても manifest.webmanifest 出力には影響しません（manifest 内に空フィールドとして残ります。完全に省きたい場合は `manifest.js` の icons 配列構築を参考に各フィールドを optional 出力に拡張してください）。
 
 > **注意**: `config.json` はプロジェクト固有の設定ファイルです。`.gitignore` に追加済みのため、Git にはコミットされません。
 
